@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Bipogative.BookStore.Books;
+using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -51,6 +53,8 @@ namespace Bipogative.BookStore.EntityFrameworkCore
         public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
         #endregion
+
+         public DbSet<Book> Books { get; set; }
         
         public BookStoreDbContext(DbContextOptions<BookStoreDbContext> options)
             : base(options)
@@ -75,10 +79,18 @@ namespace Bipogative.BookStore.EntityFrameworkCore
 
             /* Configure your own tables/entities inside here */
 
-            //builder.Entity<YourEntity>(b =>
+            builder.Entity<Book>(objEntityTypeBuilder =>
+            {
+                objEntityTypeBuilder.ToTable(BookStoreConsts.DbTablePrefix + "Books",
+                    BookStoreConsts.DbSchema);
+                objEntityTypeBuilder.ConfigureByConvention(); //auto configure for the base class props
+                objEntityTypeBuilder.Property(book => book.Name).IsRequired().HasMaxLength(128);
+            });
+
+            //builder.Entity<YourEntity>(objEntityTypeBuilder =>
             //{
-            //    b.ToTable(BookStoreConsts.DbTablePrefix + "YourEntities", BookStoreConsts.DbSchema);
-            //    b.ConfigureByConvention(); //auto configure for the base class props
+            //    objEntityTypeBuilder.ToTable(BookStoreConsts.DbTablePrefix + "YourEntities", BookStoreConsts.DbSchema);
+            //    objEntityTypeBuilder.ConfigureByConvention(); //auto configure for the base class props
             //    //...
             //});
         }
