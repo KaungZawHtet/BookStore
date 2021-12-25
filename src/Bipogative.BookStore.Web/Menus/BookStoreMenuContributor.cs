@@ -33,7 +33,17 @@ namespace Bipogative.BookStore.Web.Menus
                     order: 0
                 )
             );
-            
+
+            context.Menu.Items.Insert(
+                1,
+                 new ApplicationMenuItem(
+            BookStoreMenus.Books, // "BooksStore.Books",
+            l["Menu:Books"],
+            url: "/Books",
+                icon: "fas fa-book"
+        )
+            );
+
             if (MultiTenancyConsts.IsEnabled)
             {
                 administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);
