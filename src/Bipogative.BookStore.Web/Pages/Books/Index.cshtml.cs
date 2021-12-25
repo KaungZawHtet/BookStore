@@ -8,11 +8,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Bipogative.BookStore.Web.Pages.Books
 {
-    public class Index : PageModel
+    public class IndexModel : PageModel
     {
         private readonly ILogger<Index> _logger;
 
-        public Index(ILogger<Index> logger)
+        public IndexModel(ILogger<Index> logger)
         {
             _logger = logger;
         }
