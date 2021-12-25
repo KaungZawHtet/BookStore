@@ -3,7 +3,7 @@
 @using Bipogative.BookStore.Localization
 @using Bipogative.BookStore.Web.Pages.Books
 @using Microsoft.Extensions.Localization
-@model Bipogative.BookStore.Web.Pages.Books.Index
+@model Bipogative.BookStore.Web.Pages.Books.IndexModel
 @{
     ViewData["Title"] = "Index";
 }
@@ -18,8 +18,19 @@
 
 <abp-card>
     <abp-card-header>
-        <h2>@L["Books"]</h2>
-    </abp-card-header>
+    <abp-row>
+        <abp-column size-md="_6">
+            <abp-card-title>@L["Books"]</abp-card-title>
+        </abp-column>
+        <abp-column size-md="_6" class="text-right">
+            <abp-button id="NewBookButton"
+                        text="@L["NewBook"].Value"
+                        icon="plus"
+                        button-type="Primary"/>
+        </abp-column>
+    </abp-row>
+</abp-card-header>
+
     <abp-card-body>
         <abp-table striped-rows="true" id="BooksTable"></abp-table>
     </abp-card-body>
