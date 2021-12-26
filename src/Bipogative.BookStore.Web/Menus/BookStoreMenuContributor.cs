@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Bipogative.BookStore.Localization;
 using Bipogative.BookStore.MultiTenancy;
+using Bipogative.BookStore.Permissions;
 using Volo.Abp.Identity.Web.Navigation;
 using Volo.Abp.SettingManagement.Web.Navigation;
 using Volo.Abp.TenantManagement.Web.Navigation;
@@ -34,15 +35,21 @@ namespace Bipogative.BookStore.Web.Menus
                 )
             );
 
-            context.Menu.Items.Insert(
-                1,
-                 new ApplicationMenuItem(
-            BookStoreMenus.Books, // "BooksStore.Books",
-            l["Menu:Books"],
-            url: "/Books",
-                icon: "fas fa-book"
-        )
-            );
+
+
+            //CHECK the PERMISSION
+            if (await context.IsGrantedAsync(BookStorePermissions.Books.Default))
+            {
+                context.Menu.Items.Insert(
+                        1,
+                         new ApplicationMenuItem(
+                    BookStoreMenus.Books, // "BooksStore.Books",
+                    l["Menu:Books"],
+                    url: "/Books",
+                        icon: "fas fa-book"
+                )
+                    );
+            }
 
             if (MultiTenancyConsts.IsEnabled)
             {

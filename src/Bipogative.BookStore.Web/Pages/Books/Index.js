@@ -10,7 +10,7 @@ $(function () {
             order: [[1, "asc"]],
             searching: false,
             scrollX: true,
-            ajax: abp.libs.datatables.createAjax(acme.bookStore.books.book.getList),
+            ajax: abp.libs.datatables.createAjax(bipogative.bookStore.books.book.getList),
             columnDefs: [
                 {
                     title: l('Actions'),
@@ -19,12 +19,14 @@ $(function () {
                             [
                                 {
                                     text: l('Edit'),
+                                    visible: abp.auth.isGranted('BookStore.Books.Edit'), 
                                     action: function (data) {
                                         editModal.open({ id: data.record.id });
                                     }
                                 },
                                 {
                                     text: l('Delete'),
+                                    visible: abp.auth.isGranted('BookStore.Books.Delete'),
                                     confirmMessage: function (data) {
                                         return l(
                                             'BookDeletionConfirmationMessage',
