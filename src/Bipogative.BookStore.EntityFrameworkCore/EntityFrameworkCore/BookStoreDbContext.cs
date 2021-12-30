@@ -1,4 +1,5 @@
-﻿using Bipogative.BookStore.Books;
+﻿using Bipogative.BookStore.Authors;
+using Bipogative.BookStore.Books;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -20,15 +21,15 @@ namespace Bipogative.BookStore.EntityFrameworkCore
     [ReplaceDbContext(typeof(IIdentityDbContext))]
     [ReplaceDbContext(typeof(ITenantManagementDbContext))]
     [ConnectionStringName("Default")]
-    public class BookStoreDbContext : 
+    public class BookStoreDbContext :
         AbpDbContext<BookStoreDbContext>,
         IIdentityDbContext,
         ITenantManagementDbContext
     {
         /* Add DbSet properties for your Aggregate Roots / Entities here. */
-        
+
         #region Entities from the modules
-        
+
         /* Notice: We only implemented IIdentityDbContext and ITenantManagementDbContext
          * and replaced them for this DbContext. This allows you to perform JOIN
          * queries for the entities of these modules over the repositories easily. You
@@ -39,7 +40,7 @@ namespace Bipogative.BookStore.EntityFrameworkCore
          * More info: Replacing a DbContext of a module ensures that the related module
          * uses this DbContext on runtime. Otherwise, it will use its own DbContext class.
          */
-        
+
         //Identity
         public DbSet<IdentityUser> Users { get; set; }
         public DbSet<IdentityRole> Roles { get; set; }
@@ -47,15 +48,17 @@ namespace Bipogative.BookStore.EntityFrameworkCore
         public DbSet<OrganizationUnit> OrganizationUnits { get; set; }
         public DbSet<IdentitySecurityLog> SecurityLogs { get; set; }
         public DbSet<IdentityLinkUser> LinkUsers { get; set; }
-        
+
         // Tenant Management
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
         #endregion
 
-         public DbSet<Book> Books { get; set; }
-        
+        public DbSet<Book> Books { get; set; }
+        public DbSet<Author> Authors { get; set; }
+
+
         public BookStoreDbContext(DbContextOptions<BookStoreDbContext> options)
             : base(options)
         {
@@ -86,6 +89,32 @@ namespace Bipogative.BookStore.EntityFrameworkCore
                 objEntityTypeBuilder.ConfigureByConvention(); //auto configure for the base class props
                 objEntityTypeBuilder.Property(book => book.Name).IsRequired().HasMaxLength(128);
             });
+
+            builder.Entity<Author>(objEntityTypeBuilder =>
+            {
+                objEntityTypeBuilder.ToTable(BookStoreConsts.DbTablePrefix + "Authors",
+                BookStoreConsts.DbSchema);
+
+                objEntityTypeBuilder.ConfigureByConvention();
+
+                objEntityTypeBuilder.Property(x => x.Name)
+                    .IsRequired()
+                    .HasMaxLength(AuthorConsts.MaxNameLength);
+
+                objEntityTypeBuilder.HasIndex(x => x.Name);
+            });
+
+
+            builder.Entity<Book>(b =>
+{
+    b.ToTable(BookStoreConsts.DbTablePrefix + "Books", BookStoreConsts.DbSchema);
+    b.ConfigureByConvention(); //auto configure for the base class props
+    b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+
+    // ADD THE MAPPING FOR THE RELATION
+    b.HasOne<Author>().WithMany().HasForeignKey(x => x.AuthorId).IsRequired();
+});
+
 
             //builder.Entity<YourEntity>(objEntityTypeBuilder =>
             //{

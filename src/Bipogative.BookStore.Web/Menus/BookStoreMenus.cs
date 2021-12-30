@@ -7,6 +7,8 @@
 
         public const string Books = Prefix + ".Books";
 
+        public const string Authors = Prefix + ".Authors";
+
         //Add your menu items here...
 
     }

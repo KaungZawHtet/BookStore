@@ -51,6 +51,22 @@ namespace Bipogative.BookStore.Web.Menus
                     );
             }
 
+                //CHECK the PERMISSION
+            if (await context.IsGrantedAsync(BookStorePermissions.Authors.Default))
+            {
+                context.Menu.Items.Insert(
+                        1,
+                         new ApplicationMenuItem(
+                    BookStoreMenus.Authors, // "Authors
+                    l["Menu:Authors"],
+                    url: "/Authors",
+                        icon: "fas fa-user"
+                )
+                    );
+            }
+
+            
+
             if (MultiTenancyConsts.IsEnabled)
             {
                 administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);

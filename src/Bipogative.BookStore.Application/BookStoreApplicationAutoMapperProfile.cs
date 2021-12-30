@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Bipogative.BookStore.Authors;
 using Bipogative.BookStore.Books;
 
 namespace Bipogative.BookStore
@@ -13,6 +14,8 @@ namespace Bipogative.BookStore
 
               CreateMap<Book, BookDto>();
               CreateMap<CreateUpdateBookDto, Book>(); // look weird
+              CreateMap<Author, AuthorDto>();
+              CreateMap<Author, AuthorLookupDto>();
         }
     }
 }
